@@ -16,14 +16,20 @@ using System.Windows.Shapes;
 namespace ShoesShop.Pages
 {
     /// <summary>
-    /// Логика взаимодействия для UserPage.xaml
+    /// Логика взаимодействия для ProductPage.xaml
     /// </summary>
-    public partial class UserPage : Page
+    public partial class ProductPage : Page
     {
-        public UserPage()
+        public ProductPage()
         {
             InitializeComponent();
-            lvProducts.ItemsSource = Entities.GetContext().Product.ToList();
+            cmbCategory.ItemsSource = Entities.GetContext().Category.ToList();
+            cmbDealer.ItemsSource = Entities.GetContext().Dealer.ToList();  
+            cmbProducer.ItemsSource = Entities.GetContext().Producer.ToList();
+        }
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
 
         }
     }

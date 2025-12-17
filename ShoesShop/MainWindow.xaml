@@ -5,26 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShoesShop"
         mc:Ignorable="d"
-        Height="450" Width="800">
+        Height="600" Width="900">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--<Border Grid.Row="0"  Height="40">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <Image Source="/Photos/Icon.png"
-                       Width="140"
-                       VerticalAlignment="Center"/>
-                <TextBlock Text="Магазин обуви"
-                           Foreground="White"
-                           FontFamily="Tw Cen MT"
-                           FontSize="20"
-                           FontWeight="Bold"
-                           VerticalAlignment="Center"/>
-            </StackPanel>
-        </Border>-->
+       
 
         <Grid Grid.Row="1" Background="White" Margin="16">
             <Frame x:Name="MainFrame"

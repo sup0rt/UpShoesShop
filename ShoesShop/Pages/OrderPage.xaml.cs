@@ -16,14 +16,19 @@ using System.Windows.Shapes;
 namespace ShoesShop.Pages
 {
     /// <summary>
-    /// Логика взаимодействия для UserPage.xaml
+    /// Логика взаимодействия для OrderPage.xaml
     /// </summary>
-    public partial class UserPage : Page
+    public partial class OrderPage : Page
     {
-        public UserPage()
+        public OrderPage()
         {
             InitializeComponent();
-            lvProducts.ItemsSource = Entities.GetContext().Product.ToList();
+            cmbClient.ItemsSource = Entities.GetContext().User.ToList();
+            cmbStatus.ItemsSource = Entities.GetContext().OrderStatus.ToList();
+        }
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
 
         }
     }

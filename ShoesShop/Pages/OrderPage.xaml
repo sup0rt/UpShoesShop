@@ -1,0 +1,28 @@
+﻿<Page x:Class="ShoesShop.Pages.OrderPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ShoesShop.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800" Background="White"
+      Title="OrderPage">
+
+    <Grid>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <Label Content="Дата создания" />
+            <DatePicker Name="dpCreationDate" />
+            <Label Content="Дата доставки" />
+            <DatePicker Name="dpDeliveryDate" />
+            <Label Content="Адрес ПВЗ" />
+            <TextBox x:Name="tbPickUpAdress" />
+            <Label Content="Клиент" />
+            <ComboBox x:Name="cmbClient" DisplayMemberPath="fio" SelectedItem="{Binding User}"  SelectedValuePath="id" />
+            <Label Content="Код получения" />
+            <TextBox x:Name="tbPickUpCode" />
+            <Label Content="Статус" />
+            <ComboBox x:Name="cmbStatus" DisplayMemberPath="description" SelectedItem="{Binding OrderStatus}"  SelectedValuePath="id" />
+            <Button x:Name="btnSave" Content="Сохранить" Click="btnSave_Click" />
+        </StackPanel>
+    </Grid>
+</Page>

@@ -15,6 +15,7 @@
             <Label Content="Введите пароль" HorizontalContentAlignment="Center"/>
             <PasswordBox x:Name="pbPassword" Margin="5, 0, 5, 10" HorizontalContentAlignment="Center" Width="150"/>
             <Button x:Name="btnEnter" Content="Войти" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnEnter_Click" />
+            <Button x:Name="btnEnterWithoutRegistation" Content="Войти без регистрации" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Click="btnEnterWithoutRegistation_Click" />
         </StackPanel>
     </Grid>
 </Page>

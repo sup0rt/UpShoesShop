@@ -11,7 +11,9 @@ namespace ShoesShop
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations.Schema; 
+    using System.Linq;
+
     public partial class Order
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -33,5 +35,19 @@ namespace ShoesShop
         public virtual OrderStatus OrderStatus { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrderProduct> OrderProduct { get; set; }
+
+        [NotMapped] 
+        public string ProductListDescription
+        {
+            get
+            {
+                if (OrderProduct == null || !OrderProduct.Any())
+                    return "Нет товаров";
+
+                var descriptions = OrderProduct.Select(op =>
+                    $"{op.Product.articul} - {op.quantity} шт.").ToArray();
+                return string.Join(", ", descriptions);
+            }
+        }
     }
 }

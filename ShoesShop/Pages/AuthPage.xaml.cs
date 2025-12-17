@@ -75,5 +75,10 @@ namespace ShoesShop.Pages
                 return;
             }
         }
+
+        private void btnEnterWithoutRegistation_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new ManagerPage());
+        }
     }
 }

@@ -10,27 +10,27 @@
 
     <Grid>
         <ListView Name="lvProducts" Grid.Row="0" HorizontalContentAlignment="Center" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
 
-                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
-
-                    </WrapPanel>
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
 
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="150"/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="200"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="auto"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Image Width="200" Grid.Row="1" Stretch="UniformToFill" HorizontalAlignment="Center">
+                      
+                        <Image Width="200" Grid.Column="0" Grid.ColumnSpan="3" Stretch="UniformToFill" HorizontalAlignment="Center">
                             <Image.Source>
                                 <Binding Path="Photos/Product.photo">
                                     <Binding.TargetNullValue>
@@ -42,10 +42,35 @@
                             </Image.Source>
                         </Image>
 
-                        <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="1"  Text="{Binding articul}" HorizontalAlignment="Center" />
-                        <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="2" HorizontalAlignment="Center" FontSize="18" Text="{Binding name}"/>
-                        <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="3" HorizontalAlignment="Center" FontSize="18" Text="{Binding Category.name}"/>
-                        <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="4" HorizontalAlignment="Center" FontSize="18" Text="{Binding price}"/>
+                        <Image Width="200" Grid.Column="0" Grid.ColumnSpan="3" Stretch="UniformToFill" HorizontalAlignment="Center">
+                            <Image.Source>
+                                <Binding Path="Photos/Product.photo">
+                                    <Binding.TargetNullValue>
+                                        <ImageSource>
+                                            /Photos/picture.png
+                                        </ImageSource>
+                                    </Binding.TargetNullValue>
+                                </Binding>
+                            </Image.Source>
+                        </Image>
+
+                        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1">
+                                <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" HorizontalAlignment="Center" FontSize="18" Text="{Binding name}"/>
+                                <Label Content="|"/>
+                                <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" HorizontalAlignment="Center" FontSize="18" Text="{Binding Category.name}"/>
+                            </StackPanel>
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="1" Text="{Binding description}" HorizontalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="2" Text="{Binding Producer.name}" HorizontalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="3" Text="{Binding Dealer.name}" HorizontalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="4" Text="{Binding price}" HorizontalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="5" Text="{Binding measureUnit}" HorizontalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="6" Text="{Binding stockAmount}" HorizontalAlignment="Center" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                            <TextBlock x:Name="tbDiscount"/>
+                        </StackPanel>
 
                     </Grid>
                 </DataTemplate>
