@@ -16,7 +16,8 @@
             <TextBox x:Name="tbName" />
             <Label Content="Ед. измерения" />
             <TextBox x:Name="tbMeasureUnit" />
-            <Label Content="ЦенPriceName" />
+            <Label Content="Цена" />
+            <TextBox x:Name="tbPrice" />
             <Label Content="Поставщик" />
             <ComboBox x:Name="cmbDealer" DisplayMemberPath="name" SelectedItem="{Binding Dealer}"  SelectedValuePath="id" />
             <Label Content="Производитель" />

@@ -1,29 +1,270 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Data.Entity;
 
 namespace ShoesShop.Pages
 {
-    /// <summary>
-    /// Логика взаимодействия для AdminPage.xaml
-    /// </summary>
     public partial class AdminPage : Page
     {
+        private bool isProductMode = true;
+
         public AdminPage()
         {
             InitializeComponent();
-            lvProducts.ItemsSource = Entities.GetContext().Product.ToList();
+            LoadData();
+            LoadFilters();
+        }
+
+        private void LoadData()
+        {
+            // Загрузка товаров
+            var products = Entities.GetContext().Product
+                .Include(p => p.Category)
+                .Include(p => p.Producer)
+                .Include(p => p.Dealer)
+                .ToList();
+            lvProducts.ItemsSource = products;
+
+            // Загрузка заказов
+            var orders = Entities.GetContext().Order
+                .Include(o => o.OrderProduct.Select(op => op.Product))
+                .Include(o => o.OrderStatus)
+                .Include(o => o.PickUpPoint)
+                .Include(o => o.User)  // Загружаем клиента
+                .ToList();
+            lvOrders.ItemsSource = orders;
+        }
+
+        private void LoadFilters()
+        {
+            cmbCategory.ItemsSource = Entities.GetContext().Category.ToList();
+            cmbDealer.ItemsSource = Entities.GetContext().Dealer.ToList();
+            cmbProducer.ItemsSource = Entities.GetContext().Producer.ToList();
+
+            List<string> sorting = new List<string>
+            {
+                "Без сортировки",
+                "По возрастанию цены",
+                "По убыванию цены",
+                "По возрастанию количества",
+                "По убыванию количества"
+            };
+            cmbSort.ItemsSource = sorting;
+            cmbSort.SelectedIndex = 0;
+        }
+
+        private void UpdateList()
+        {
+            var products = Entities.GetContext().Product
+                .Include(p => p.Category)
+                .Include(p => p.Producer)
+                .Include(p => p.Dealer)
+                .AsEnumerable();
+
+            if (cmbCategory.SelectedItem != null && cmbCategory.SelectedItem is Category selectedCategory)
+            {
+                products = products.Where(p => p.categoryId == selectedCategory.id);
+            }
+
+            if (cmbDealer.SelectedItem != null && cmbDealer.SelectedItem is Dealer selectedDealer)
+            {
+                products = products.Where(p => p.dealerId == selectedDealer.id);
+            }
+
+            if (cmbProducer.SelectedItem != null && cmbProducer.SelectedItem is Producer selectedProducer)
+            {
+                products = products.Where(p => p.producerId == selectedProducer.id);
+            }
+
+            if (!string.IsNullOrEmpty(tbSearch.Text))
+            {
+                string searchText = tbSearch.Text.ToLower();
+                products = products.Where(p =>
+                    p.name.ToLower().Contains(searchText) ||
+                    p.description.ToLower().Contains(searchText) ||
+                    p.articul.ToLower().Contains(searchText));
+            }
+
+            if (cmbSort.SelectedItem != null)
+            {
+                string sortOption = cmbSort.SelectedItem.ToString();
+
+                switch (sortOption)
+                {
+                    case "По возрастанию цены":
+                        products = products.OrderBy(p => p.price);
+                        break;
+                    case "По убыванию цены":
+                        products = products.OrderByDescending(p => p.price);
+                        break;
+                    case "По возрастанию количества":
+                        products = products.OrderBy(p => int.TryParse(p.stockAmount, out int amount) ? amount : 0);
+                        break;
+                    case "По убыванию количества":
+                        products = products.OrderByDescending(p => int.TryParse(p.stockAmount, out int amount) ? amount : 0);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            lvProducts.ItemsSource = products.ToList();
+        }
+
+        // ========== ОБРАБОТЧИКИ ФИЛЬТРОВ ==========
+        private void cmbProducer_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateList();
+        private void cmbSort_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateList();
+        private void cmbCategory_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateList();
+        private void cmbDealer_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateList();
+        private void tbSearch_TextChanged(object sender, TextChangedEventArgs e) => UpdateList();
+
+        private void btnClear_Click(object sender, RoutedEventArgs e)
+        {
+            cmbProducer.SelectedItem = null;
+            cmbDealer.SelectedItem = null;
+            cmbCategory.SelectedItem = null;
+            cmbSort.SelectedIndex = 0;
+            tbSearch.Text = "";
+            LoadData();
+        }
+
+        // ========== ПЕРЕКЛЮЧЕНИЕ РЕЖИМОВ ==========
+        private void btnProduct_Click(object sender, RoutedEventArgs e)
+        {
+            isProductMode = true;
+            lvOrders.Visibility = Visibility.Collapsed;
+            lvProducts.Visibility = Visibility.Visible;
+        }
+
+        private void btnOrder_Click(object sender, RoutedEventArgs e)
+        {
+            isProductMode = false;
+            lvOrders.Visibility = Visibility.Visible;
+            lvProducts.Visibility = Visibility.Collapsed;
+        }
+
+        // ========== CRUD ОПЕРАЦИИ ==========
+        private void btnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            // Кнопка "Создать" - проверяем текущий режим
+            if (lvProducts.Visibility == Visibility.Visible)
+            {
+                // Режим товаров - создание нового товара
+                NavigationService.Navigate(new ProductPage());
+            }
+            else if (lvOrders.Visibility == Visibility.Visible)
+            {
+                // Режим заказов - создание нового заказа
+                NavigationService.Navigate(new OrderPage());
+            }
+        }
+
+        private void btnEdit_Click(object sender, RoutedEventArgs e)
+        {
+            // Кнопка "Редактировать" - проверяем текущий режим и выбранный элемент
+            if (lvProducts.Visibility == Visibility.Visible && lvProducts.SelectedItem != null)
+            {
+                NavigationService.Navigate(new ProductPage(lvProducts.SelectedItem as Product));
+            }
+            else if (lvOrders.Visibility == Visibility.Visible && lvOrders.SelectedItem != null)
+            {
+                NavigationService.Navigate(new OrderPage(lvOrders.SelectedItem as Order));
+            }
+            else
+            {
+                MessageBox.Show("Выберите элемент для редактирования", "Внимание",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (lvProducts.Visibility == Visibility.Visible && lvProducts.SelectedItem != null)
+                {
+                    var product = lvProducts.SelectedItem as Product;
+                    var result = MessageBox.Show($"Удалить товар '{product.name}'?", "Подтверждение удаления",
+                        MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        var hasOrders = Entities.GetContext().OrderProduct
+                            .Any(op => op.productId == product.id);
+
+                        if (hasOrders)
+                        {
+                            MessageBox.Show("Невозможно удалить товар, так как он есть в заказах",
+                                "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        Entities.GetContext().Product.Remove(product);
+                        Entities.GetContext().SaveChanges();
+                        LoadData();
+                        MessageBox.Show("Товар удален", "Успех",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                else if (lvOrders.Visibility == Visibility.Visible && lvOrders.SelectedItem != null)
+                {
+                    var order = lvOrders.SelectedItem as Order;
+                    var result = MessageBox.Show($"Удалить заказ от {order.creationDate:dd.MM.yyyy}?",
+                        "Подтверждение удаления", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        var orderProducts = Entities.GetContext().OrderProduct
+                            .Where(op => op.orderId == order.id)
+                            .ToList();
+
+                        Entities.GetContext().OrderProduct.RemoveRange(orderProducts);
+                        Entities.GetContext().Order.Remove(order);
+                        Entities.GetContext().SaveChanges();
+
+                        LoadData();
+                        MessageBox.Show("Заказ удален", "Успех",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Выберите элемент для удаления", "Внимание",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            LoadData();
+        }
+
+        // ========== НАВИГАЦИЯ ПРИ ВЫБОРЕ ЭЛЕМЕНТА ==========
+        private void lvProducts_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // При выборе элемента в списке товаров - переход в режим редактирования
+            if (lvProducts.SelectedItem != null)
+            {
+                NavigationService.Navigate(new ProductPage(lvProducts.SelectedItem as Product));
+            }
+        }
+
+        private void lvOrders_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // При выборе элемента в списке заказов - переход в режим редактирования
+            if (lvOrders.SelectedItem != null)
+            {
+                NavigationService.Navigate(new OrderPage(lvOrders.SelectedItem as Order));
+            }
         }
     }
 }

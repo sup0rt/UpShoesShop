@@ -48,12 +48,9 @@
             <StackPanel Orientation="Vertical" Margin="5" VerticalAlignment="Center">
                 <Button x:Name="btnClear" Content="Очистить" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnClear_Click" />
             </StackPanel>
-            <StackPanel Orientation="Vertical" Margin="5" VerticalAlignment="Center">
-                <Button x:Name="btnCreation" Content="Создать" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnCreation_Click" />
-            </StackPanel>
         </StackPanel>
 
-        <ListView Name="lvProducts" Grid.Row="1" HorizontalContentAlignment="Center" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="lvProducts_SelectionChanged">
+        <ListView Name="lvProducts" Grid.Row="1" HorizontalContentAlignment="Center" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -101,7 +98,7 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <ListView Name="lvOrders" Grid.Row="1" HorizontalContentAlignment="Center" Visibility="Collapsed" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="lvOrders_SelectionChanged">
+        <ListView Name="lvOrders" Grid.Row="1" HorizontalContentAlignment="Center" Visibility="Collapsed" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>

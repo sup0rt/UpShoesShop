@@ -142,38 +142,6 @@ namespace ShoesShop.Pages
             lvProducts.Visibility = Visibility.Collapsed;
         }
 
-        private void btnCreation_Click(object sender, RoutedEventArgs e)
-        {
-            if(lvOrders.Visibility != Visibility.Collapsed)
-            {
-                if(lvOrders.SelectedItem == null)
-                {
-                    NavigationService.Navigate(new OrderPage());
-                }
-            }
-            else if(lvProducts.Visibility != Visibility.Collapsed) 
-            {
-                if (lvProducts.SelectedItem == null)
-                {
-                    NavigationService.Navigate(new ProductPage());
-                }
-            }
-        }
-
-        private void lvProducts_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (lvProducts.SelectedItem != null)
-            {
-                NavigationService.Navigate(new ProductPage());
-            }
-        }
-
-        private void lvOrders_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (lvOrders.SelectedItem != null)
-            {
-                NavigationService.Navigate(new OrderPage());
-            }
-        }
+        
     }
 }

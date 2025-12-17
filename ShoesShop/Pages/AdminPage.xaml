@@ -4,16 +4,64 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ShoesShop.Pages"
+      xmlns:converters="clr-namespace:ShoesShop.Converters"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="700" d:DesignWidth="900"
       Title="Страница администратора" Background="White">
 
+    <Page.Resources>
+        <converters:ImagePathConverter x:Key="ImagePathConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </Page.Resources>
+
     <Grid>
-        <ListView Name="lvProducts" Grid.Row="0" HorizontalContentAlignment="Center" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
 
+        <!-- Верхняя панель с фильтрами (как у менеджера) -->
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel Orientation="Vertical" Margin="5">
+                <Button x:Name="btnProduct" Content="Товары" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Click="btnProduct_Click" />
+                <Button x:Name="btnOrder" Content="Заказы" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnOrder_Click" />
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="5">
+                <Label Content="Сортировать" />
+                <ComboBox x:Name="cmbSort" SelectionChanged="cmbSort_SelectionChanged" Width="120"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="5">
+                <Label Content="Категория" />
+                <ComboBox x:Name="cmbCategory" DisplayMemberPath="name" SelectedValuePath="id" 
+                          SelectionChanged="cmbCategory_SelectionChanged" Width="120"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="5">
+                <Label Content="Поставщик" />
+                <ComboBox x:Name="cmbDealer" DisplayMemberPath="name" SelectedValuePath="id" 
+                          SelectionChanged="cmbDealer_SelectionChanged" Width="120"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="5">
+                <Label Content="Производитель" />
+                <ComboBox x:Name="cmbProducer" DisplayMemberPath="name" SelectedValuePath="id" 
+                          SelectionChanged="cmbProducer_SelectionChanged" Width="120"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="5">
+                <Label Content="Поиск" />
+                <TextBox x:Name="tbSearch" Width="110" TextChanged="tbSearch_TextChanged"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="5" VerticalAlignment="Center">
+                <Button x:Name="btnClear" Content="Очистить" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnClear_Click" />
+            </StackPanel>
+        </StackPanel>
 
+        <!-- Список товаров -->
+        <ListView Name="lvProducts" Grid.Row="1" HorizontalContentAlignment="Center" 
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                  SelectionChanged="lvProducts_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
+                    <!-- Копируем ItemTemplate из ManagerPage.xaml -->
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200"/>
@@ -29,52 +77,78 @@
                             <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="auto"></RowDefinition>
                         </Grid.RowDefinitions>
-                      
-                        <Image Width="200" Grid.Column="0" Grid.ColumnSpan="3" Stretch="UniformToFill" HorizontalAlignment="Center">
+
+                        <Image Width="200" Grid.Column="0" Grid.RowSpan="3" Stretch="UniformToFill" HorizontalAlignment="Center">
                             <Image.Source>
-                                <Binding Path="Photos/Product.photo">
-                                    <Binding.TargetNullValue>
-                                        <ImageSource>
-                                            /Photos/picture.png
-                                        </ImageSource>
-                                    </Binding.TargetNullValue>
-                                </Binding>
+                                <Binding Path="photo" Converter="{StaticResource ImagePathConverter}"/>
                             </Image.Source>
                         </Image>
 
-                        <Image Width="200" Grid.Column="0" Grid.ColumnSpan="3" Stretch="UniformToFill" HorizontalAlignment="Center">
-                            <Image.Source>
-                                <Binding Path="Photos/Product.photo">
-                                    <Binding.TargetNullValue>
-                                        <ImageSource>
-                                            /Photos/picture.png
-                                        </ImageSource>
-                                    </Binding.TargetNullValue>
-                                </Binding>
-                            </Image.Source>
-                        </Image>
-
-                        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1">
-                                <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" HorizontalAlignment="Center" FontSize="18" Text="{Binding name}"/>
-                                <Label Content="|"/>
-                                <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" HorizontalAlignment="Center" FontSize="18" Text="{Binding Category.name}"/>
+                        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock VerticalAlignment="Center" TextAlignment="Right" Width="200" FontSize="18" Text="{Binding name}"/>
+                                <Label Content="|" Margin="10,0"/>
+                                <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="200" FontSize="18" Text="{Binding Category.name}"/>
                             </StackPanel>
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="1" Text="{Binding description}" HorizontalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="2" Text="{Binding Producer.name}" HorizontalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="3" Text="{Binding Dealer.name}" HorizontalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="4" Text="{Binding price}" HorizontalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="5" Text="{Binding measureUnit}" HorizontalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="6" Text="{Binding stockAmount}" HorizontalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="400" Text="{Binding description}" Margin="0,5"/>
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="400" Text="{Binding Producer.name}"/>
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="400" Text="{Binding Dealer.name}"/>
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="400" Text="{Binding price}"/>
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="400" Text="{Binding measureUnit}"/>
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="400" Text="{Binding stockAmount}"/>
                         </StackPanel>
 
-                        <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
-                            <TextBlock x:Name="tbDiscount"/>
+                        <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
+                            <TextBlock x:Name="tbDiscount" Text="{Binding activeDiscount, StringFormat='Скидка: {0}%'}" 
+                                       Visibility="{Binding activeDiscount, Converter={StaticResource NullToVisibilityConverter}}"/>
                         </StackPanel>
-
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+        <!-- Список заказов -->
+        <ListView Name="lvOrders" Grid.Row="1" HorizontalContentAlignment="Center" Visibility="Collapsed" 
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="lvOrders_SelectionChanged">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <!-- Копируем ItemTemplate из ManagerPage.xaml -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="150"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0">
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="300" 
+                                       Text="{Binding ProductListDescription, StringFormat='Состав заказа: {0}'}"/>
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="300" 
+                                       Text="{Binding OrderStatus.description, StringFormat='Статус: {0}'}" Margin="0,5"/>
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="300" 
+                                       Text="{Binding PickUpPoint.adress, StringFormat='ПВЗ: {0}'}"/>
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="300" 
+                                       Text="{Binding creationDate, StringFormat='Дата создания: {0:dd.MM.yyyy HH:mm}'}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" 
+                                       Text="{Binding deliveryDate, StringFormat='Дата доставки: {0:dd.MM.yyyy HH:mm}'}" 
+                                       Visibility="{Binding deliveryDate, Converter={StaticResource NullToVisibilityConverter}}"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Background="LightGray">
+            <Button x:Name="btnAdd" Content="➕ Создать" Width="120" Margin="5" Padding="5" Click="btnAdd_Click"/>
+            <Button x:Name="btnDelete" Content="🗑️ Удалить" Width="120" Margin="5" Padding="5" Click="btnDelete_Click"/>
+        </StackPanel>
     </Grid>
 </Page>

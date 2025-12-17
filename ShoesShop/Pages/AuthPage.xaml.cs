@@ -78,7 +78,7 @@ namespace ShoesShop.Pages
 
         private void btnEnterWithoutRegistation_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new ManagerPage());
+            NavigationService.Navigate(new AdminPage());
         }
     }
 }
