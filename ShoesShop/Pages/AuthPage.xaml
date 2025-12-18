@@ -6,16 +6,18 @@
       xmlns:local="clr-namespace:ShoesShop.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Страница авторизации" Background="White">
+      Title="Страница авторизации" Style="{StaticResource PageStyle}">
 
     <Grid>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Label Content="Введите логин" HorizontalContentAlignment="Center"/>
-            <TextBox x:Name="tbLogin" Margin="5, 0, 5, 5" HorizontalContentAlignment="Center" Width="150"/>
-            <Label Content="Введите пароль" HorizontalContentAlignment="Center"/>
+            <Label Content="Введите логин" HorizontalContentAlignment="Center" Style="{StaticResource LabelStyle}"/>
+            <TextBox x:Name="tbLogin" Margin="5, 0, 5, 5" HorizontalContentAlignment="Center" Width="150" Style="{StaticResource TextBoxStyle}"/>
+            <Label Content="Введите пароль" HorizontalContentAlignment="Center" Style="{StaticResource LabelStyle}"/>
             <PasswordBox x:Name="pbPassword" Margin="5, 0, 5, 10" HorizontalContentAlignment="Center" Width="150"/>
-            <Button x:Name="btnEnter" Content="Войти" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnEnter_Click" />
-            <Button x:Name="btnEnterWithoutRegistation" Content="Войти без регистрации" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Click="btnEnterWithoutRegistation_Click" />
+            <Button x:Name="btnEnter" Content="Войти" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnEnter_Click" Style="{StaticResource ButtonStyle}"/>
+            <Button x:Name="btnEnterWithoutRegistation" Content="Войти без регистрации"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" 
+                    Click="btnEnterWithoutRegistation_Click" Style="{StaticResource ButtonStyle}"/>
             <Button x:Name="btnTestManager" Content="Отладка менеджера" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Click="btnTestManager_Click"  />
             <Button x:Name="btnTestAdmin" Content="Отладка администратора" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Click="btnTestAdmin_Click"  />
         </StackPanel>

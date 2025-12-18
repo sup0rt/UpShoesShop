@@ -12,7 +12,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-       
+        <Button x:Name="btnBack" Content="Назад" Style="{StaticResource ButtonStyle}" 
+                    Margin="5,0" HorizontalAlignment="Right" Click="btnBack_Click" />
 
         <Grid Grid.Row="1" Background="White" Margin="16">
             <Frame x:Name="MainFrame"

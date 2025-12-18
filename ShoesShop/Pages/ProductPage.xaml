@@ -5,34 +5,57 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ShoesShop.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="600" d:DesignWidth="800" Background="White"
+      d:DesignHeight="600" d:DesignWidth="800" Style="{StaticResource PageStyle}"
       Title="ProductPage">
 
     <Grid>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
-            <Label Content="Артикул" />
-            <TextBox x:Name="tbArticul" />
-            <Label Content="Название" />
-            <TextBox x:Name="tbName" />
-            <Label Content="Ед. измерения" />
-            <TextBox x:Name="tbMeasureUnit" />
-            <Label Content="Цена" />
-            <TextBox x:Name="tbPrice" />
-            <Label Content="Поставщик" />
-            <ComboBox x:Name="cmbDealer" DisplayMemberPath="name"  SelectedValuePath="id" />
-            <Label Content="Производитель" />
-            <ComboBox x:Name="cmbProducer" DisplayMemberPath="name" SelectedValuePath="id" />
-            <Label Content="Категория" />
-            <ComboBox x:Name="cmbCategory" DisplayMemberPath="name" SelectedValuePath="id" />
-            <Label Content="Скидка" />
-            <TextBox x:Name="tbDiscount" />
-            <Label Content="Остаток" />
-            <TextBox x:Name="tbStock" />
-            <Label Content="Описание" />
-            <TextBox x:Name="tbDesc" />
-            <Label Content="фото" />
-            <TextBox x:Name="tbPhoto" />
-            <Button x:Name="btnSave" Content="Сохранить" Click="btnSave_Click" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="0" Margin="5">
+            <Label Content="Артикул" Style="{StaticResource LabelStyle}"/>
+            <TextBox x:Name="tbArticul" Style="{StaticResource TextBoxStyle}"/>
+            
+            <Label Content="Ед. измерения" Style="{StaticResource LabelStyle}"/>
+            <TextBox x:Name="tbMeasureUnit" Style="{StaticResource TextBoxStyle}"/>
+            
+            <Label Content="Поставщик" Style="{StaticResource LabelStyle}"/>
+            <ComboBox x:Name="cmbDealer" DisplayMemberPath="name"  SelectedValuePath="id" 
+                      Style="{StaticResource ComboBoxStyle}"/>
+            
+            <Label Content="Категория" Style="{StaticResource LabelStyle}"/>
+            <ComboBox x:Name="cmbCategory" DisplayMemberPath="name" SelectedValuePath="id" 
+                      Style="{StaticResource ComboBoxStyle}"/>
+            
+            <Label Content="Остаток" Style="{StaticResource LabelStyle}"/>
+            <TextBox x:Name="tbStock" Style="{StaticResource TextBoxStyle}"/>
+
+            <Label Content="фото" Style="{StaticResource LabelStyle}" Grid.ColumnSpan="2"/>
+            <TextBox x:Name="tbPhoto" Style="{StaticResource TextBoxStyle}" Grid.ColumnSpan="2"/>
         </StackPanel>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Margin="5">
+            <Label Content="Название" Style="{StaticResource LabelStyle}"/>
+            <TextBox x:Name="tbName" Style="{StaticResource TextBoxStyle}"/>
+
+            <Label Content="Цена" Style="{StaticResource LabelStyle}"/>
+            <TextBox x:Name="tbPrice" Style="{StaticResource TextBoxStyle}"/>
+
+            <Label Content="Производитель" Style="{StaticResource LabelStyle}"/>
+            <ComboBox x:Name="cmbProducer" DisplayMemberPath="name" SelectedValuePath="id" 
+              Style="{StaticResource ComboBoxStyle}"/>
+
+            <Label Content="Скидка" Style="{StaticResource LabelStyle}"/>
+            <TextBox x:Name="tbDiscount" Style="{StaticResource TextBoxStyle}"/>
+
+            <Label Content="Описание" Style="{StaticResource LabelStyle}"/>
+            <TextBox x:Name="tbDesc" Style="{StaticResource TextBoxStyle}"/>
+        </StackPanel>
+
+       
+        <Button x:Name="btnSave" Content="Сохранить" Click="btnSave_Click"  HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.ColumnSpan="2"
+Style="{StaticResource ButtonStyle}" />
+
     </Grid>
 </Page>

@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ShoesShop.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="700" d:DesignWidth="900" Background="White"
+      d:DesignHeight="700" d:DesignWidth="900" Style="{StaticResource PageStyle}"
       Title="OrderPage">
 
     <Grid>
@@ -17,34 +17,38 @@
 
         <StackPanel Grid.Row="0" Orientation="Vertical" Margin="10">
             <StackPanel Orientation="Horizontal">
-                <Label Content="Дата создания" Width="120"/>
-                <DatePicker Name="dpCreationDate" Width="200"/>
-                <Label Content="Дата доставки" Width="120" Margin="20,0,0,0"/>
-                <DatePicker Name="dpDeliveryDate" Width="200"/>
+                <Label Content="Дата создания" Width="120" Style="{StaticResource LabelStyle}"/>
+                <DatePicker Name="dpCreationDate" Width="200" Style="{StaticResource DatePickerStyle}"/>
+                <Label Content="Дата доставки" Width="120" Margin="20,0,0,0" Style="{StaticResource LabelStyle}"/>
+                <DatePicker Name="dpDeliveryDate" Width="200" Style="{StaticResource DatePickerStyle}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                <Label Content="Адрес ПВЗ" Width="120"/>
-                <ComboBox x:Name="cmbPickUpAdress" DisplayMemberPath="adress" SelectedValuePath="id" Width="200"/>
+                <Label Content="Адрес ПВЗ" Width="120" Style="{StaticResource LabelStyle}"/>
+                <ComboBox x:Name="cmbPickUpAdress" DisplayMemberPath="adress" SelectedValuePath="id" Width="200"
+                          Style="{StaticResource ComboBoxStyle}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                <Label Content="Клиент" Width="120"/>
-                <ComboBox x:Name="cmbClient" DisplayMemberPath="fio" SelectedValuePath="id" Width="200"/>
-                <Label Content="Код получения" Width="120" Margin="20,0,0,0"/>
-                <TextBox x:Name="tbPickUpCode" Width="200"/>
+                <Label Content="Клиент" Width="120" Style="{StaticResource LabelStyle}"/>
+                <ComboBox x:Name="cmbClient" DisplayMemberPath="fio" SelectedValuePath="id" Width="200"
+                          Style="{StaticResource ComboBoxStyle}"/>
+                <Label Content="Код получения" Width="120" Margin="20,0,0,0" Style="{StaticResource LabelStyle}"/>
+                <TextBox x:Name="tbPickUpCode" Width="200" Style="{StaticResource TextBoxStyle}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="0,10,0,10">
-                <Label Content="Статус" Width="120"/>
-                <ComboBox x:Name="cmbStatus" DisplayMemberPath="description" SelectedValuePath="id" Width="200"/>
+                <Label Content="Статус" Width="120" Style="{StaticResource LabelStyle}"/>
+                <ComboBox x:Name="cmbStatus" DisplayMemberPath="description" SelectedValuePath="id" Width="200" 
+                          Style="{StaticResource ComboBoxStyle}"/>
             </StackPanel>
         </StackPanel>
 
         <GroupBox Grid.Row="1" Header="Состав заказа" Margin="10">
             <DataGrid x:Name="dgOrderProducts" AutoGenerateColumns="False" 
                       CanUserAddRows="False" CanUserDeleteRows="False"
-                      SelectionMode="Single" IsReadOnly="True">
+                      SelectionMode="Single" IsReadOnly="True"
+                      Style="{StaticResource DataGridStyle}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Артикул" Binding="{Binding Product.articul}" Width="100"/>
                     
@@ -113,17 +117,19 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="Товаров: " FontWeight="Bold"/>
-                <TextBlock x:Name="tbTotalItems" Text="0" FontWeight="Bold" Margin="5,0,20,0"/>
-                <TextBlock Text="Общая сумма: " FontWeight="Bold"/>
-                <TextBlock x:Name="tbTotalSum" Text="0.00 ₽" FontWeight="Bold" Margin="5,0"/>
+                <TextBlock Text="Товаров: " FontWeight="Bold" Style="{StaticResource TextBlockStyle}"/>
+                <TextBlock x:Name="tbTotalItems" Text="0" FontWeight="Bold" Margin="5,0,20,0" 
+                           Style="{StaticResource TextBlockStyle}"/>
+                <TextBlock Text="Общая сумма: " FontWeight="Bold" Style="{StaticResource TextBlockStyle}"/>
+                <TextBlock x:Name="tbTotalSum" Text="0.00 ₽" FontWeight="Bold" Margin="5,0"
+                           Style="{StaticResource TextBlockStyle}"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <Button x:Name="btnSave" Content="Сохранить" Width="100" Height="30" 
-                        Margin="5" Click="btnSave_Click"/>
+                        Margin="5" Click="btnSave_Click" Style="{StaticResource ButtonStyle}"/>
                 <Button x:Name="btnCancel" Content="Отмена" Width="100" Height="30" 
-                        Margin="5" Click="btnCancel_Click"/>
+                        Margin="5" Click="btnCancel_Click" Style="{StaticResource ButtonStyle}"/>
             </StackPanel>
         </Grid>
     </Grid>

@@ -4,61 +4,104 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ShoesShop.Pages"
+      xmlns:converters="clr-namespace:ShoesShop.Converters"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Страница пользователя" Background="White">
+      Title="Страница пользователя" Style="{StaticResource PageStyle}">
+
+    <Page.Resources>
+        <converters:ImagePathConverter x:Key="ImagePathConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <converters:HighDiscountCheckConverter x:Key="HighDiscountCheckConverter"/>
+    </Page.Resources>
 
     <Grid>
-        <ListView Name="lvProducts" Grid.Row="0" HorizontalContentAlignment="Center" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-
-
+        <ListView Name="lvProducts" Grid.Row="1" HorizontalContentAlignment="Center" 
+          ScrollViewer.HorizontalScrollBarVisibility="Disabled" Style="{StaticResource ListViewStyle}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="150"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"></RowDefinition>
-                            <RowDefinition Height="auto"></RowDefinition>
-                            <RowDefinition Height="auto"></RowDefinition>
-                            <RowDefinition Height="auto"></RowDefinition>
-                            <RowDefinition Height="auto"></RowDefinition>
-                            <RowDefinition Height="auto"></RowDefinition>
-                            <RowDefinition Height="auto"></RowDefinition>
-                        </Grid.RowDefinitions>
+                    <Border x:Name="rowBorder" Padding="0">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Style.Triggers>
 
-                        <Image Width="200" Grid.Column="0" Grid.ColumnSpan="3" Stretch="UniformToFill" HorizontalAlignment="Center">
-                            <Image.Source>
-                                <Binding Path="photo">
-                                    <Binding.TargetNullValue>
-                                        <BitmapImage UriSource="pack://application:,,,/Photos/picture.png"/>
-                                    </Binding.TargetNullValue>
-                                    </Binding>
-                            </Image.Source>
-                        </Image>
+                                    <DataTrigger Binding="{Binding activeDiscount, Converter={StaticResource HighDiscountCheckConverter}}" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource HighDiscountBrush}"/>
+                                        <Setter Property="Padding" Value="5"/>
+                                    </DataTrigger>
 
-                        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Center" >
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1">
-                                <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" HorizontalAlignment="Left" FontSize="18" Text="{Binding name}"/>
-                                <Label Content="|"/>
-                                <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" HorizontalAlignment="Right" FontSize="18" Text="{Binding Category.name}"/>
+                                    <DataTrigger Binding="{Binding stockAmount}" Value="0">
+                                        <Setter Property="Background" Value="{StaticResource ZeroStockBrush}"/>
+                                        <Setter Property="Padding" Value="5"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="150"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Column="0" Grid.RowSpan="3" Background="Transparent">
+                                <Image Width="200" Stretch="UniformToFill" HorizontalAlignment="Center">
+                                    <Image.Source>
+                                        <Binding Path="photo" Converter="{StaticResource ImagePathConverter}"/>
+                                    </Image.Source>
+                                </Image>
+                            </Border>
+
+                            <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left" 
+                               VerticalAlignment="Center" Margin="10,0" Background="Transparent">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock VerticalAlignment="Center" TextAlignment="Right" Width="200" 
+                                       FontSize="18" Text="{Binding name}" Style="{StaticResource TextBlockStyle}"/>
+                                    <Label Content="|" Margin="10,0" Style="{StaticResource LabelStyle}"/>
+                                    <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="200" 
+                                       FontSize="18" Text="{Binding Category.name}" Style="{StaticResource TextBlockStyle}"/>
+                                </StackPanel>
+                                <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="400" 
+                                   Text="{Binding description}" Margin="0,5" Style="{StaticResource TextBlockStyle}"/>
+                                <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="400" 
+                                   Text="{Binding Producer.name}" Style="{StaticResource TextBlockStyle}"/>
+                                <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="400" 
+                                   Text="{Binding Dealer.name}" Style="{StaticResource TextBlockStyle}"/>
+                                <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="400" 
+                                   Text="{Binding price}" Style="{StaticResource TextBlockStyle}"/>
+                                <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="400" 
+                                   Text="{Binding measureUnit}" Style="{StaticResource TextBlockStyle}"/>
+                                <TextBlock VerticalAlignment="Center" TextAlignment="Left" Width="400" 
+                                   Text="{Binding stockAmount}" Style="{StaticResource TextBlockStyle}"/>
                             </StackPanel>
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="1" Text="{Binding description}" HorizontalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="2" Text="{Binding Producer.name}" HorizontalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="3" Text="{Binding Dealer.name}" HorizontalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="4" Text="{Binding price}" HorizontalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="5" Text="{Binding measureUnit}" HorizontalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" TextAlignment="Center" Width="200" Grid.Row="6" Text="{Binding stockAmount}" HorizontalAlignment="Center" />
-                        </StackPanel>
 
-                        <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" >
-                            <TextBlock x:Name="tbDiscount"/>
-                        </StackPanel>
-
-                    </Grid>
+                            <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right" 
+                               VerticalAlignment="Center" Margin="0,0,10,0" Background="Transparent">
+                                <TextBlock x:Name="tbDiscount" 
+                                   Text="{Binding activeDiscount, StringFormat='Скидка: {0}%'}" 
+                                   Visibility="{Binding activeDiscount, Converter={StaticResource NullToVisibilityConverter}}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockStyle}">
+                                            <Setter Property="Padding" Value="5,2"/>
+                                            <Setter Property="Margin" Value="5"/>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
