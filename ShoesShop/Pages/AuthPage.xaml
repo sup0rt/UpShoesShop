@@ -18,8 +18,6 @@
             <Button x:Name="btnEnterWithoutRegistation" Content="Войти без регистрации"
                     HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" 
                     Click="btnEnterWithoutRegistation_Click" Style="{StaticResource ButtonStyle}"/>
-            <Button x:Name="btnTestManager" Content="Отладка менеджера" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Click="btnTestManager_Click"  />
-            <Button x:Name="btnTestAdmin" Content="Отладка администратора" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Click="btnTestAdmin_Click"  />
         </StackPanel>
     </Grid>
 </Page>
