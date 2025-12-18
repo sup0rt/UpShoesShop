@@ -11,7 +11,6 @@ namespace ShoesShop.Pages
         private Product currentProduct;
         private bool isEditMode = false;
 
-        // Конструктор для создания
         public ProductPage()
         {
             InitializeComponent();
@@ -20,7 +19,6 @@ namespace ShoesShop.Pages
             LoadComboBoxes();
         }
 
-        // Конструктор для редактирования
         public ProductPage(Product product)
         {
             InitializeComponent();
@@ -51,9 +49,8 @@ namespace ShoesShop.Pages
             tbArticul.Text = currentProduct.articul;
             tbName.Text = currentProduct.name;
             tbMeasureUnit.Text = currentProduct.measureUnit;
-            tbPrice.Text = currentProduct.price.ToString(); // Добавили поле для цены
+            tbPrice.Text = currentProduct.price.ToString(); 
 
-            // activeDiscount - Nullable<decimal>
             tbDiscount.Text = currentProduct.activeDiscount?.ToString() ?? "";
             tbStock.Text = currentProduct.stockAmount;
             tbDesc.Text = currentProduct.description;
@@ -102,7 +99,6 @@ namespace ShoesShop.Pages
                 return false;
             }
 
-            // Валидация цены (добавьте TextBox tbPrice в XAML)
             if (!decimal.TryParse(tbPrice.Text, out decimal price) || price <= 0)
             {
                 MessageBox.Show("Введите корректную цену", "Ошибка",
@@ -131,7 +127,6 @@ namespace ShoesShop.Pages
                 return false;
             }
 
-            // Валидация скидки (Nullable<decimal>)
             if (!string.IsNullOrWhiteSpace(tbDiscount.Text))
             {
                 if (!decimal.TryParse(tbDiscount.Text, out decimal discount) || discount < 0 || discount > 100)
@@ -156,16 +151,13 @@ namespace ShoesShop.Pages
         {
             var context = Entities.GetContext();
 
-            // Заполняем данные товара
             currentProduct.articul = tbArticul.Text.Trim();
             currentProduct.name = tbName.Text.Trim();
             currentProduct.measureUnit = tbMeasureUnit.Text.Trim();
 
-            // Цена - decimal (не nullable)
             if (decimal.TryParse(tbPrice.Text, out decimal price))
                 currentProduct.price = price;
 
-            // Скидка - Nullable<decimal>
             if (decimal.TryParse(tbDiscount.Text, out decimal discount))
                 currentProduct.activeDiscount = discount;
             else
@@ -175,12 +167,10 @@ namespace ShoesShop.Pages
             currentProduct.description = tbDesc.Text.Trim();
             currentProduct.photo = tbPhoto.Text.Trim();
 
-            // Приводим к int
             currentProduct.categoryId = (int)cmbCategory.SelectedValue;
             currentProduct.dealerId = (int)cmbDealer.SelectedValue;
             currentProduct.producerId = (int)cmbProducer.SelectedValue;
 
-            // Сохраняем
             if (!isEditMode)
             {
                 context.Product.Add(currentProduct);

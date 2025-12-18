@@ -19,11 +19,11 @@
             <Label Content="Цена" />
             <TextBox x:Name="tbPrice" />
             <Label Content="Поставщик" />
-            <ComboBox x:Name="cmbDealer" DisplayMemberPath="name" SelectedItem="{Binding Dealer}"  SelectedValuePath="id" />
+            <ComboBox x:Name="cmbDealer" DisplayMemberPath="name"  SelectedValuePath="id" />
             <Label Content="Производитель" />
-            <ComboBox x:Name="cmbProducer" DisplayMemberPath="name" SelectedItem="{Binding Producer}"  SelectedValuePath="id" />
+            <ComboBox x:Name="cmbProducer" DisplayMemberPath="name" SelectedValuePath="id" />
             <Label Content="Категория" />
-            <ComboBox x:Name="cmbCategory" DisplayMemberPath="name" SelectedItem="{Binding Category}"  SelectedValuePath="id" />
+            <ComboBox x:Name="cmbCategory" DisplayMemberPath="name" SelectedValuePath="id" />
             <Label Content="Скидка" />
             <TextBox x:Name="tbDiscount" />
             <Label Content="Остаток" />

@@ -21,7 +21,6 @@
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
-        <!-- Верхняя панель с фильтрами (как у менеджера) -->
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
             <StackPanel Orientation="Vertical" Margin="5">
                 <Button x:Name="btnProduct" Content="Товары" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Click="btnProduct_Click" />
@@ -55,13 +54,11 @@
             </StackPanel>
         </StackPanel>
 
-        <!-- Список товаров -->
         <ListView Name="lvProducts" Grid.Row="1" HorizontalContentAlignment="Center" 
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                  SelectionChanged="lvProducts_SelectionChanged">
+                  PreviewMouseRightButtonDown="lvProducts_PreviewMouseRightButtonDown" SelectionChanged="lvProducts_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <!-- Копируем ItemTemplate из ManagerPage.xaml -->
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200"/>
@@ -107,12 +104,10 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <!-- Список заказов -->
         <ListView Name="lvOrders" Grid.Row="1" HorizontalContentAlignment="Center" Visibility="Collapsed" 
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="lvOrders_SelectionChanged">
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" PreviewMouseRightButtonDown="lvOrders_PreviewMouseRightButtonDown" SelectionChanged="lvOrders_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <!-- Копируем ItemTemplate из ManagerPage.xaml -->
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
@@ -147,8 +142,7 @@
         </ListView>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Background="LightGray">
-            <Button x:Name="btnAdd" Content="➕ Создать" Width="120" Margin="5" Padding="5" Click="btnAdd_Click"/>
-            <Button x:Name="btnDelete" Content="🗑️ Удалить" Width="120" Margin="5" Padding="5" Click="btnDelete_Click"/>
+            <Button x:Name="btnAdd" Content="Создать" Width="120" Margin="5" Padding="5" Click="btnAdd_Click"/>
         </StackPanel>
     </Grid>
 </Page>

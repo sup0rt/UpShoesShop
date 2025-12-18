@@ -78,6 +78,16 @@ namespace ShoesShop.Pages
 
         private void btnEnterWithoutRegistation_Click(object sender, RoutedEventArgs e)
         {
+            NavigationService.Navigate(new UserPage());
+        }
+
+        private void btnTestManager_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new ManagerPage());
+        }
+
+        private void btnTestAdmin_Click(object sender, RoutedEventArgs e)
+        {
             NavigationService.Navigate(new AdminPage());
         }
     }

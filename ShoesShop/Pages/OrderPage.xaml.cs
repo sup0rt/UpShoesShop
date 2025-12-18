@@ -19,14 +19,12 @@ namespace ShoesShop.Pages
 
             if (order != null)
             {
-                // Режим редактирования
                 currentOrder = order;
                 isEditMode = true;
                 LoadOrderData();
             }
             else
             {
-                // Режим создания - НЕ создаем id вручную!
                 currentOrder = new Order
                 {
                     creationDate = DateTime.Now
@@ -42,10 +40,10 @@ namespace ShoesShop.Pages
         {
             dpCreationDate.SelectedDate = currentOrder.creationDate;
             dpDeliveryDate.SelectedDate = currentOrder.deliveryDate;
-            tbPickUpAdress.Text = currentOrder.PickUpPoint?.adress;
+            cmbPickUpAdress.SelectedValue = currentOrder.PickUpPoint.id;
             tbPickUpCode.Text = currentOrder.pickUpCode;
 
-            cmbClient.SelectedValue = currentOrder.clientId; // Изменено с userId на clientId
+            cmbClient.SelectedValue = currentOrder.clientId; 
             cmbStatus.SelectedValue = currentOrder.statusId;
         }
 
@@ -53,19 +51,18 @@ namespace ShoesShop.Pages
         {
             cmbClient.ItemsSource = Entities.GetContext().User.ToList();
             cmbStatus.ItemsSource = Entities.GetContext().OrderStatus.ToList();
+            cmbPickUpAdress.ItemsSource = Entities.GetContext().PickUpPoint.ToList();
         }
 
         private void LoadProducts()
         {
             var context = Entities.GetContext();
 
-            // Все товары
             var allProducts = context.Product
                 .Include(p => p.Category)
                 .Include(p => p.Producer)
                 .ToList();
 
-            // Существующие товары в заказе
             List<OrderProduct> existingOrderProducts = new List<OrderProduct>();
 
             if (isEditMode)
@@ -76,7 +73,6 @@ namespace ShoesShop.Pages
                     .ToList();
             }
 
-            // Создаем ViewModel для каждого товара
             orderProducts.Clear();
 
             foreach (var product in allProducts)
@@ -108,14 +104,12 @@ namespace ShoesShop.Pages
         {
             int totalItems = orderProducts.Sum(op => op.Quantity);
 
-            // price - decimal (не nullable), поэтому просто умножаем
             decimal totalSum = orderProducts.Sum(op => op.Quantity * op.Product.price);
 
             tbTotalItems.Text = totalItems.ToString();
             tbTotalSum.Text = totalSum.ToString("N2") + " ₽";
         }
 
-        // ========== ОБРАБОТЧИКИ КНОПОК +/- ==========
         private void btnIncrease_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -146,7 +140,6 @@ namespace ShoesShop.Pages
             }
         }
 
-        // ========== СОХРАНЕНИЕ ==========
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             if (!ValidateOrder())
@@ -182,7 +175,7 @@ namespace ShoesShop.Pages
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(tbPickUpAdress.Text))
+            if (cmbPickUpAdress.SelectedItem == null)
             {
                 MessageBox.Show("Введите адрес ПВЗ", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
@@ -221,32 +214,15 @@ namespace ShoesShop.Pages
             {
                 try
                 {
-                    // 1. Сохраняем/обновляем PickUpPoint
-                    var pickUpPoint = context.PickUpPoint
-                        .FirstOrDefault(p => p.adress == tbPickUpAdress.Text);
-
-                    if (pickUpPoint == null)
-                    {
-                        pickUpPoint = new PickUpPoint
-                        {
-                            adress = tbPickUpAdress.Text.Trim()
-                        };
-                        context.PickUpPoint.Add(pickUpPoint);
-                        context.SaveChanges();
-                    }
-
-                    // 2. Заполняем данные заказа
                     currentOrder.creationDate = dpCreationDate.SelectedDate.Value;
                     currentOrder.deliveryDate = dpDeliveryDate.SelectedDate;
                     currentOrder.pickUpCode = tbPickUpCode.Text.Trim();
 
-                    // ВАЖНО: приводим к int (SelectedValue возвращает object)
                     currentOrder.clientId = (int)cmbClient.SelectedValue;
                     currentOrder.statusId = (int)cmbStatus.SelectedValue;
 
-                    currentOrder.pickUpPointId = pickUpPoint.id;
+                    currentOrder.pickUpPointId = (int)cmbPickUpAdress.SelectedValue;
 
-                    // 3. Сохраняем заказ
                     if (!isEditMode)
                     {
                         context.Order.Add(currentOrder);
@@ -257,7 +233,6 @@ namespace ShoesShop.Pages
                     }
                     context.SaveChanges();
 
-                    // 4. Сохраняем состав заказа
                     SaveOrderProducts(context);
 
                     transaction.Commit();
@@ -272,7 +247,6 @@ namespace ShoesShop.Pages
 
         private void SaveOrderProducts(Entities context)
         {
-            // Удаляем старые связи
             if (isEditMode)
             {
                 var oldProducts = context.OrderProduct
@@ -281,7 +255,6 @@ namespace ShoesShop.Pages
                 context.OrderProduct.RemoveRange(oldProducts);
             }
 
-            // Добавляем новые связи
             foreach (var vm in orderProducts.Where(vm => vm.Quantity > 0))
             {
                 var orderProduct = new OrderProduct
@@ -302,7 +275,6 @@ namespace ShoesShop.Pages
             NavigationService.GoBack();
         }
 
-        // ========== ВСПОМОГАТЕЛЬНЫЙ КЛАСС ==========
         public class OrderProductViewModel
         {
             public Product Product { get; set; }

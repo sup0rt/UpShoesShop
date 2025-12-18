@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Data.Entity;
+using System.Windows.Media;
 
 namespace ShoesShop.Pages
 {
@@ -20,7 +21,6 @@ namespace ShoesShop.Pages
 
         private void LoadData()
         {
-            // Загрузка товаров
             var products = Entities.GetContext().Product
                 .Include(p => p.Category)
                 .Include(p => p.Producer)
@@ -28,12 +28,11 @@ namespace ShoesShop.Pages
                 .ToList();
             lvProducts.ItemsSource = products;
 
-            // Загрузка заказов
             var orders = Entities.GetContext().Order
                 .Include(o => o.OrderProduct.Select(op => op.Product))
                 .Include(o => o.OrderStatus)
                 .Include(o => o.PickUpPoint)
-                .Include(o => o.User)  // Загружаем клиента
+                .Include(o => o.User)
                 .ToList();
             lvOrders.ItemsSource = orders;
         }
@@ -114,7 +113,6 @@ namespace ShoesShop.Pages
             lvProducts.ItemsSource = products.ToList();
         }
 
-        // ========== ОБРАБОТЧИКИ ФИЛЬТРОВ ==========
         private void cmbProducer_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateList();
         private void cmbSort_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateList();
         private void cmbCategory_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateList();
@@ -131,7 +129,6 @@ namespace ShoesShop.Pages
             LoadData();
         }
 
-        // ========== ПЕРЕКЛЮЧЕНИЕ РЕЖИМОВ ==========
         private void btnProduct_Click(object sender, RoutedEventArgs e)
         {
             isProductMode = true;
@@ -146,25 +143,20 @@ namespace ShoesShop.Pages
             lvProducts.Visibility = Visibility.Collapsed;
         }
 
-        // ========== CRUD ОПЕРАЦИИ ==========
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            // Кнопка "Создать" - проверяем текущий режим
             if (lvProducts.Visibility == Visibility.Visible)
             {
-                // Режим товаров - создание нового товара
                 NavigationService.Navigate(new ProductPage());
             }
             else if (lvOrders.Visibility == Visibility.Visible)
             {
-                // Режим заказов - создание нового заказа
                 NavigationService.Navigate(new OrderPage());
             }
         }
 
         private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
-            // Кнопка "Редактировать" - проверяем текущий режим и выбранный элемент
             if (lvProducts.Visibility == Visibility.Visible && lvProducts.SelectedItem != null)
             {
                 NavigationService.Navigate(new ProductPage(lvProducts.SelectedItem as Product));
@@ -180,38 +172,22 @@ namespace ShoesShop.Pages
             }
         }
 
-        private void btnDelete_Click(object sender, RoutedEventArgs e)
+
+        private void btnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            LoadData();
+        }
+
+        private void lvOrders_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             try
             {
-                if (lvProducts.Visibility == Visibility.Visible && lvProducts.SelectedItem != null)
+                var dependencyObject = (DependencyObject)e.OriginalSource;
+                var lvItem = FindAncestor<ListViewItem>(dependencyObject);
+
+                if (lvItem != null)
                 {
-                    var product = lvProducts.SelectedItem as Product;
-                    var result = MessageBox.Show($"Удалить товар '{product.name}'?", "Подтверждение удаления",
-                        MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        var hasOrders = Entities.GetContext().OrderProduct
-                            .Any(op => op.productId == product.id);
-
-                        if (hasOrders)
-                        {
-                            MessageBox.Show("Невозможно удалить товар, так как он есть в заказах",
-                                "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                            return;
-                        }
-
-                        Entities.GetContext().Product.Remove(product);
-                        Entities.GetContext().SaveChanges();
-                        LoadData();
-                        MessageBox.Show("Товар удален", "Успех",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                }
-                else if (lvOrders.Visibility == Visibility.Visible && lvOrders.SelectedItem != null)
-                {
-                    var order = lvOrders.SelectedItem as Order;
+                    var order = lvOrders.ItemContainerGenerator.ItemFromContainer(lvItem) as Order;
                     var result = MessageBox.Show($"Удалить заказ от {order.creationDate:dd.MM.yyyy}?",
                         "Подтверждение удаления", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -230,10 +206,59 @@ namespace ShoesShop.Pages
                             MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
-                else
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void lvProducts_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            try
+            {
+                var dependencyObject = (DependencyObject)e.OriginalSource;
+                var lvItem = FindAncestor<ListViewItem>(dependencyObject);
+
+                if (lvItem != null)
                 {
-                    MessageBox.Show("Выберите элемент для удаления", "Внимание",
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    var product = lvProducts.ItemContainerGenerator.ItemFromContainer(lvItem) as Product;
+                    var result = MessageBox.Show($"Удалить товар '{product.name}' и все связанные с ним записи из заказов?", "Подтверждение удаления",
+                        MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        var hasOrders = Entities.GetContext().OrderProduct
+                            .Where(op=>op.productId == product.id)
+                            .Join(Entities.GetContext().Order,
+                            op => op.orderId,
+                            o => o.id,
+                            (op, o)=> o)
+                            .Any(o=>o.statusId == 2);
+
+                        if (hasOrders)
+                        {
+                            MessageBox.Show("Невозможно удалить товар, так как он есть в активных заказах",
+                                "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        var orderProducts = Entities.GetContext().OrderProduct
+                            .Where(op => op.productId == product.id)
+                            .ToList();
+
+                        if (orderProducts.Any())
+                        {
+                            Entities.GetContext().OrderProduct.RemoveRange(orderProducts);
+                        }
+
+                        Entities.GetContext().Product.Remove(product);
+                        Entities.GetContext().SaveChanges();
+                        LoadData();
+                        MessageBox.Show("Товар удален", "Успех",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
                 }
             }
             catch (Exception ex)
@@ -243,15 +268,8 @@ namespace ShoesShop.Pages
             }
         }
 
-        private void btnRefresh_Click(object sender, RoutedEventArgs e)
-        {
-            LoadData();
-        }
-
-        // ========== НАВИГАЦИЯ ПРИ ВЫБОРЕ ЭЛЕМЕНТА ==========
         private void lvProducts_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // При выборе элемента в списке товаров - переход в режим редактирования
             if (lvProducts.SelectedItem != null)
             {
                 NavigationService.Navigate(new ProductPage(lvProducts.SelectedItem as Product));
@@ -260,11 +278,25 @@ namespace ShoesShop.Pages
 
         private void lvOrders_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // При выборе элемента в списке заказов - переход в режим редактирования
             if (lvOrders.SelectedItem != null)
             {
                 NavigationService.Navigate(new OrderPage(lvOrders.SelectedItem as Order));
             }
+        }
+
+        private static T FindAncestor<T>(DependencyObject current) where T : DependencyObject
+        {
+            do
+            {
+                if (current is T t)
+                {
+                    return t;
+                }
+                current = VisualTreeHelper.GetParent(current);
+            }
+            while (current != null);
+
+            return null;
         }
     }
 }
